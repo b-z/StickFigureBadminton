@@ -189,12 +189,20 @@ function drawImage(img, x, y, w, h) {
     if (w > 0) {
         ctx.drawImage(img, x, y, w, h);
     } else {
-        ctx.drawImage(img, x, y, w, h);
+        ctx.save();
+        ctx.scale(-1, 1);
+        ctx.drawImage(img, -w - x, y, w, h);
+        ctx.restore();
     }
 }
 
-function drawImage2(img, x, y, deg) {
-    // ctx.drawImage(img, )
+function drawImage2(img, x, y, w, h, deg) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(deg);
+    ctx.translate(-x, -y);
+    ctx.drawImage(img, x - w / 2, y - h / 2, w, h);
+    ctx.restore();        
 }
 
 function drawMan(who) {
@@ -442,7 +450,9 @@ function drawBall() {
     mypoint[4] = theBall.mx + bx3;
     mypoint[5] = theBall.my + by3;
     // drawImage2(images.ball, mypoint);
-    drawImage(images.ball, theBall.mx, theBall.my, bx1, by1);
+    // drawImage(images.ball, theBall.mx + bx1, theBall.my + by1, -bx1 * 2, -by1 * 2, theBall.deg);
+    drawImage2(images.ball, theBall.mx, theBall.my, -bx1 * 2, -by1 * 2, theBall.deg);
+    // console.log(theBall.deg);
 }
 
 function drawPoint() {
@@ -539,14 +549,15 @@ function checkBallStatus() {
 }
 
 function ballDeg() {
-    var tmp00, tmp01, tmpvx, tmpvy, tmpvv = 1000;
-    tmpvx = theBall.mvx * tmpvv;
-    tmpvy = theBall.mvy * tmpvv;
-    if (tmpvx == 0) {
-        if (tmpvy > 0) {
+    // var tmp00, tmp01, tmpvx, tmpvy, tmpvv = 1000;
+    // tmpvx = theBall.mvx * tmpvv;
+    // tmpvy = theBall.mvy * tmpvv;
+    // if (tmpvx == 0) {
+    //     if (tmpvy > 0) {
 
-        }
-    }
+    //     }
+    // }
+    theBall.deg = Math.atan2(theBall.mvy, theBall.mvx);
 }
 
 function ballThreePoint() {
