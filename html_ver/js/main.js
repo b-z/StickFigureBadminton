@@ -181,12 +181,20 @@ function drawChooseMode() {
     ctx.drawImage(images.start, 0, 0, wWidth, wHeight);
 }
 
+function drawBackground() {
+    ctx.drawImage(images.bg, 0, 0, wWidth, wHeight);
+}
+
 function drawImage(img, x, y, w, h) {
-    ctx.drawImage(img, x, y, w, h);
+    if (w > 0) {
+        ctx.drawImage(img, x, y, w, h);
+    } else {
+        ctx.drawImage(img, x, y, w, h);
+    }
 }
 
 function drawImage2(img, x, y, deg) {
-
+    // ctx.drawImage(img, )
 }
 
 function drawMan(who) {
@@ -433,7 +441,8 @@ function drawBall() {
     mypoint[3] = theBall.my + by2;
     mypoint[4] = theBall.mx + bx3;
     mypoint[5] = theBall.my + by3;
-    drawImage2(images.ball, mypoint);
+    // drawImage2(images.ball, mypoint);
+    drawImage(images.ball, theBall.mx, theBall.my, bx1, by1);
 }
 
 function drawPoint() {
@@ -618,6 +627,9 @@ function manMove() {
 
     man1.mx += man1.mvx;
     man2.mx += man2.mvx;
+
+    man1.mvy -= u3;
+    man2.mvy -= u3;
 
     man1.my -= man1.mvy;
     man2.my -= man2.mvy;
@@ -927,6 +939,7 @@ function stepOver() {
         choosingMode = 1;
         drawChooseMode();
     }
+    // console.log(kw, ks, ka, kd);
 }
 
 function onPaint() {
@@ -941,6 +954,7 @@ function onPaint() {
             drawInst();
         } else if (choosingMode == 1) {
             drawChooseMode();
+            // onPaint();
         } else {
             drawBackground();
             drawPoint();
@@ -952,6 +966,7 @@ function onPaint() {
 }
 
 function onBtnStart() {
+    console.log('onBtnStart');
     man1.mx = leftManLimit;
     man1.my = humanHeight;
     man2.mx = wWidth - leftManLimit - 200;
@@ -1018,8 +1033,54 @@ document.addEventListener('keyup', function(e) {
     }
 });
 
+document.addEventListener('mouseup', function(e) {
+    if (drawingTitle == 1) {
+        drawingTitle = 0;
+        onPaint();
+        return;
+    }
+    if (drawingInst == 1) {
+        drawingInst = 0;
+        onPaint();
+        return;
+    }
+    if (choosingMode == 0) {
+        return;
+    }
+    var mousex = e.x;
+    var mousey = e.y;
+    console.log(mousex, mousey);
+
+    if (mousex < 900 && mousex > 650) {
+        if (mousey > 320 && mousey < 380) {
+            leftAIon = 0;
+            rightAIon = 0;
+            choosingMode = 0;
+             onBtnStart();
+        } else if (mousey > 380 && mousey < 440) {
+            leftAIon = 0;
+            rightAIon = 1;
+            choosingMode = 0;
+            onBtnStart();
+        } else if (mousey > 440 && mousey < 500) {
+            leftAIon = 1;
+            rightAIon = 0;
+            choosingMode = 0;
+            onBtnStart();
+        } else if (mousey > 500 && mousey < 560) {
+            leftAIon = 1;
+            rightAIon = 1;
+            choosingMode = 0;
+            onBtnStart();
+        } else if (mousey > 560 && mousey < 620) {
+            // invoke PostQuitMessage, NULL
+        }
+    }
+});
+
 function imageLoadComplete() {
-    onBtnStart();
+    // onBtnStart();
+    onPaint();
 }
 
 function loadImages() {
