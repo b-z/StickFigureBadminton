@@ -775,7 +775,7 @@ function hitBall(sx, sy, svx, svy) {
 }
 
 function playHitBallSound() {
-
+    $('#hit')[0].play();
 }
 
 function hitBallDegree(sx, sy, v0, deg) {
@@ -1219,9 +1219,10 @@ function confirmAI(who) {
     eval((who==1?'leftAIconsider':'rightAIconsider') + '=' + $('#textarea' + who).val());
 }
 
-loadImages();
 
 $(document).ready(function(){
     // the "href" attribute of the modal trigger must specify the modal ID that wants to be triggered
+    loadImages();
     $('.modal').modal();
+    $('#music')[0].play();
 });
