@@ -68,6 +68,7 @@ lInterval = 6;
 // idTimer1 dd 1                           ;定时器编号
 
 CLOCK = 0;
+TIMER = 0;
 theBall = {
     mx: ballLeft,
     my: ballHeight,
@@ -822,16 +823,15 @@ function manHitBall(mx, my, sx, sy, speed) {
     hitBall(sx, sy, a, b);
 }
 
-/*
-how to 写一个AI ?
-    · 下面提示要注意的一定不能改
-    · 写AI也就是根据当前各个物体的状态参数等，确定要完成的键盘操作
-    · 左边AI可用的键盘操作有kw/ka/ks/kd
-    · 按下按键就是把kw等等变成1，抬起就是变成0
-    · 随机数取法: 有个全局变量CLOCK，是计时用的，随便把它mod一个比较小的数，就可认为是随机数
 
-*/
 function leftAIconsider() {
+    /*
+    如何写一个AI ?
+        · 下面提示要注意的一定不能改
+        · 写AI也就是根据当前各个物体的状态参数等，确定要完成的键盘操作
+        · 左边AI可用的键盘操作有kw/ka/ks/kd
+        · 按下按键就是把kw等等变成1，抬起就是变成0
+    */
     var temp2;
     // ;注意! 下面这三行不能删!!!
     if (theBall.mx > midWidth) {
@@ -871,9 +871,19 @@ function leftAIconsider() {
 }
 
 function rightAIconsider() {
+    /*
+    如何写一个AI ?
+        · 下面提示要注意的一定不能改
+        · 写AI也就是根据当前各个物体的状态参数等，确定要完成的键盘操作
+        · 右边AI可用的键盘操作有kup/kdown/kleft/kright
+        · 按下按键就是把kup等等变成1，抬起就是变成0
+    */
     var temp1, eax, ebx, ecx;
+    // ;注意! 下面这三行不能删!!!
     if (theBall.mx < midWidth) {
         rightAIhitted = 0;
+    }
+    if (theBall.mx < midWidth) {
         eax = midWidth * 1.5 + 30;
         ebx = midWidth * 1.5 - 30;
         if (man2.mx < ebx) {
@@ -901,6 +911,8 @@ function rightAIconsider() {
             kright = 0;
         }
     }
+    // ;控制击球动作的逻辑
+    // ;注意! 击球动作发出前，必须判断leftAIhitted为0，击球后要将之置为1!!!!!!
     if (rightAIhitted == 0) {
         temp1 = getDistance(theBall.mx, theBall.my, man2.mx, man2.my);
         if (temp1 < 110 && temp1 > 45) {
@@ -925,6 +937,10 @@ function drawOneFrame() {
     onPaint();
 }
 
+function showWinMessageBox(who) {
+    Materialize.toast("Player " + who + " wins!", 3000);
+}
+
 function stepOver() {
     CLOCK++;
     drawOneFrame();
@@ -939,16 +955,20 @@ function stepOver() {
         man2.score = 0;
         someoneWins = 1;
         showWinMessageBox(1);
-        choosingMode = 1;
-        drawChooseMode();
+        setTimeout(function() {
+            choosingMode = 1;
+            drawChooseMode();
+        }, 3000);
     }
     if (man2.score == 7) {
         man1.score = 0;
         man2.score = 0;
         someoneWins = 1;
         showWinMessageBox(2);
-        choosingMode = 1;
-        drawChooseMode();
+        setTimeout(function() {
+            choosingMode = 1;
+            drawChooseMode();
+        }, 3000);
     }
     // console.log(kw, ks, ka, kd);
 }
@@ -1001,6 +1021,8 @@ function onBtnStart() {
     score1 = 0;
     score2 = 0;
     CLOCK = 0;
+    if (TIMER)
+        clearInterval(TIMER);
     TIMER = setInterval(stepOver, 15);
 }
 
@@ -1044,7 +1066,8 @@ document.addEventListener('keyup', function(e) {
     }
 });
 
-document.addEventListener('mouseup', function(e) {
+$('#canv')[0].addEventListener('mouseup', function(e) {
+    // console.log(e);
     if (drawingTitle == 1) {
         drawingTitle = 0;
         onPaint();
@@ -1058,9 +1081,9 @@ document.addEventListener('mouseup', function(e) {
     if (choosingMode == 0) {
         return;
     }
-    var mousex = e.x;
-    var mousey = e.y;
-    console.log(mousex, mousey);
+    var mousex = e.offsetX / $('#canv').width() * 990;
+    var mousey = e.offsetY / $('#canv').height() * 660;
+    // console.log(mousex, mousey);
 
     if (mousex < 900 && mousex > 650) {
         if (mousey > 320 && mousey < 380) {
@@ -1085,6 +1108,7 @@ document.addEventListener('mouseup', function(e) {
             onBtnStart();
         } else if (mousey > 560 && mousey < 620) {
             // invoke PostQuitMessage, NULL
+            window.location = 'https://github.com/b-z/StickFigureBadminton';
         }
     }
 });
@@ -1185,4 +1209,19 @@ function loadImages() {
     }
 }
 
+function editAI(who) {
+    $('#textarea' + who).val('' + (who==1?leftAIconsider:rightAIconsider));
+    $('#textarea' + who).trigger('autoresize');
+    $('#modal' + who).modal('open');
+}
+
+function confirmAI(who) {
+    eval((who==1?'leftAIconsider':'rightAIconsider') + '=' + $('#textarea' + who).val());
+}
+
 loadImages();
+
+$(document).ready(function(){
+    // the "href" attribute of the modal trigger must specify the modal ID that wants to be triggered
+    $('.modal').modal();
+});

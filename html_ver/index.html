@@ -7,11 +7,66 @@
 		Stick Figure Badminton
 	</title>
     <link href="css/materialize.min.css" rel="stylesheet" type="text/css">
+    <style type="text/css">
+    	canvas:focus {
+    		outline: none;
+    	}
+    	canvas {
+    		width: 100%;
+    		box-shadow: 0 5px 11px 0 rgba(0,0,0,0.18), 0 4px 15px 0 rgba(0,0,0,0.15);
+    	}
+    	body {
+    		background-image: url(img/bg.gif);
+    	    display: flex;
+    		min-height: 100vh;
+    		flex-direction: column;
+    	}
+    	main {
+		    display: flex;
+		    flex: 1 0 auto;
+		    align-items: center;
+		    justify-content: center;
+		    margin-top: 1rem!important;
+		    margin-bottom: 1rem!important;
+		}
+		textarea {
+			font-family: "courier", "consolas"!important;
+		}
+    </style>
 </head>
 
 <body>
-	<div style="position: absolute; border: 1px solid blue; top: 0; bottom: 0; left: 0; right: 0;">
+	<main class="container">
 		<canvas id="canv" tabindex="0" width="990px" height="660px">Please use Chrome</canvas>
+	</main>
+	<div id="buttons" class="row">
+		<div class="col s12">
+			<a class="waves-effect waves-light btn" onclick="editAI(1);">Edit left AI</a>
+			<a class="waves-effect waves-light btn" onclick="editAI(2);">Edit right AI</a>
+		</div>
+	</div>
+
+	<div id="modal1" class="modal modal-fixed-footer">
+	    <div class="modal-content">
+	    	<h4>Left AI</h4>
+	    	<div class="input-field">
+          		<textarea id="textarea1" class="materialize-textarea"></textarea>
+        	</div>
+	    </div>
+	    <div class="modal-footer">
+	    	<a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat " onclick="confirmAI(1);">Confirm</a>
+	    </div>
+	</div>
+	<div id="modal2" class="modal modal-fixed-footer">
+	    <div class="modal-content">
+	    	<h4>Right AI</h4>
+	    	<div class="input-field">
+          		<textarea id="textarea2" class="materialize-textarea"></textarea>
+        	</div>
+	    </div>
+	    <div class="modal-footer">
+	    	<a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat " onclick="confirmAI(2);">Confirm</a>
+	    </div>
 	</div>
 
 	<div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
